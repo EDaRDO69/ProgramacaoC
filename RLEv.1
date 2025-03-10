@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+int main(void){
+	int i = 0, j = 0, cont = 0;;
+	int mat[6][6];
+	int car_atual = 0, ult_car = 0;; 
+ 
+	srand(time(NULL));
+
+	for(i = 0; i < 6 ; i++) {
+		for(j = 0; j < 6; j++) {
+			mat[i][j] = rand() % 2;			
+		}
+	}
+
+	for( i = 0; i < 6; i++) {
+		for(j=0;j<6;j++) {
+	      printf("%d ", mat[i][j]);
+	    }
+	    printf("\n");
+	}
+
+	ult_car = mat[0][0];
+
+	for(i = 0; i < 6; i++) {
+		for(j = 0; j < 6; j++){
+			car_atual = mat[i][j];
+			if(car_atual == ult_car) {
+				cont++;
+			}else {
+				printf("\n");
+				printf("%d : %d", cont, ult_car);
+				cont = 1;
+				ult_car = mat[i][j];
+			}
+		}
+	}
+
+	printf("\n%d : %d", cont, car_atual);
+}
