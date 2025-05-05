@@ -1,0 +1,149 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <time.h>
+
+void showArray(int *array, int n)
+{
+	int i = 0;
+	
+	for(i = 0; i < n; i++)
+	{
+		printf("%d ", array[i]);
+	}
+}
+
+void fillBestCase(int *array, int n)
+{
+	int i = 0;
+	
+	for(i = 0; i < n; i++)
+	{
+		array[i] = i;
+	}
+}
+
+void fillAverageCase(int *array, int n)
+{
+	int i = 0;
+	
+	for(i = 0; i < n; i++)
+	{
+		array[i] = rand() % n;
+	}
+}
+
+void fillWorstCase(int *array, int n)
+{
+	int i = 0;
+	
+	for(i = 0; i < n; i++)
+	{
+		array[i] = (n-i-1);
+	}
+}
+
+void insertionSort(int *array, int n)
+{
+	int i = 0;
+	int temp = 0;
+	int j = 0;
+	
+	for (i = 1; i < n; i++)
+	{
+	    temp = array[i];
+	    j = i - 1;
+	
+	    while (j >= 0 && array[j] > temp)
+	    {
+	        array[j + 1] = array[j];
+            j--;
+        }
+	    array[j + 1] = temp;
+	}
+}
+
+void bubbleSort(int *array, int n)
+{
+	int temp = 0, i = 0;
+	bool change = true;
+		 
+	while(change)
+	{
+		change = false;
+		  
+		for(i = 0; i < n - 1; i++)
+		{
+			if(array[i] > array[i + 1])
+			{
+				temp = array[i];
+				array[i] = array[i + 1];
+				array[i + 1] = temp;
+				change = true;
+			}
+		}
+	}
+}
+
+int main()
+{
+	int n = 200000, times = 8, tests = 0;
+	double longerTime = 0, shorterTime = 999, average = 0, variation = 0;
+	
+	while(tests < times)
+	{
+		int i =  0;
+		int *array = (int*)malloc(sizeof(int)*n);
+			 
+		if(array == NULL)
+		{
+			printf("\nErro na alocação de memória.\n");
+			exit(-1);
+		}
+		
+		srand(time(NULL));
+		
+		//fillBestCase(array, n); 
+		fillAverageCase(array, n);
+		//fillWorstCase(array, n) ;
+		
+		//showArray(array, n);
+		
+		//printf("\n\n");
+		
+		clock_t t; 
+		t = clock();
+		
+		insertionSort(array, n); 
+		//bubbleSort(array, n);
+		
+		t = clock() - t; 
+		double time_taken = ((double)t)/CLOCKS_PER_SEC;
+		
+		printf("\n");
+		printf("\tTempo de leitura: %f\n", time_taken); 
+		
+		free(array);
+		
+		tests++;
+		average = (time_taken + average);
+		if(time_taken > longerTime)
+		{
+			longerTime = time_taken;
+		}
+		
+		if(time_taken < shorterTime)
+		{
+			shorterTime = time_taken;
+		}
+	}
+	
+	variation = (longerTime - shorterTime);
+	average = (average / times);
+	printf("\n\nN: %d", n);
+	printf("\nVezes testadas: %d", times);
+	printf("\nMedia: %f", average);
+	printf("\nVariacao (%.4f - %.4f): %.4f", longerTime, shorterTime, variation);
+
+	return 0;
+}
