@@ -1,0 +1,156 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+void fillMat(double **a, double **l, double **u, int N)
+{
+	//Preenche a matriz A com numeros aleatorios de 1 a 10 e as matrizes L e U com 0
+	int i = 0, j = 0;
+	for(i = 0; i < N; i++)
+	{
+		for(j = 0; j < N; j++)
+		{
+			a[i][j] = rand() % 9 + 1;
+			u[i][j] = 0.0;
+			l[i][j] = 0.0;
+		}
+	}
+}
+
+void showMat(double **a, int N)
+{
+	//Mostra a matriz
+	int i = 0, j = 0;
+	
+	printf("\n");
+	for(i = 0; i < N; i++)
+	{
+		printf("  ");
+		for(j = 0; j < N; j++)
+		{
+			printf("%6.2f ", a[i][j]);
+		}
+		printf("\n");
+	}
+	
+	printf("\n");
+}
+
+void decomLU(double **a, double **l, double **u, int N) {
+    int i = 0, j = 0, k = 0, s = 0;
+    double soma = 0;
+
+	// Calcula os elementos de U na linha k
+    for (k = 0; k < N; k++) 
+	{
+        for (j = k; j < N; j++) 
+		{
+            soma = 0;
+            for (s = 0; s < k; s++) 
+			{
+				//Cálcula o sigma da fórmula
+                soma += (l[k][s] * u[s][j]);
+            }
+            //Realiza a fórmula do U
+            u[k][j] = (a[k][j] - soma);
+        }
+		
+		// Calcula os elementos de L na coluna k
+        for (i = k + 1; i < N; i++) 
+		{
+            soma = 0;
+            for (s = 0; s < k; s++) 
+			{
+				//Cálcula o sigma da fórmula
+                soma += (l[i][s] * u[s][k]);
+            }
+
+            if (u[k][k] != 0) 
+			{
+				//Se for diferente de 0, vai realizar a fórmula do L
+                l[i][k] = ((a[i][k] - soma) / u[k][k]);
+            } else {
+            	// Matriz singular ou pivô zero, então, para a execução
+                printf("Matriz singular ou pivot zero!\n");
+                return;
+        	}
+        }
+		//Define a diagonal principal de L como 1
+        l[k][k] = 1;
+    }
+}
+
+void multMat(double **l, double **u, double **mult, int N)
+{
+	int i = 0, j = 0, k = 0;
+	//Realiza a multiplicação de L * U = A
+	for(i = 0; i < N; i++)
+	{
+		for(j = 0; j < N; j++)
+		{
+			mult[i][j] = 0.0;
+			for(k = 0; k < N; k++)
+			{
+				mult[i][j] += (l[i][k] * u[k][j]);
+			}
+		}
+	}
+}
+
+int main()
+{
+	int i = 0, N = 0;
+	
+	printf("Insira o tamanho de matriz que deseja (NxN): ");
+    scanf("%d", &N);
+    
+    //Usa o malloc para alocar memória dinamicamente e poder utilizar matrizes grandes.
+	double **a = malloc(N * sizeof(double*));
+    double **l = malloc(N * sizeof(double*));
+    double **u = malloc(N * sizeof(double*));
+    double **mult = malloc(N * sizeof(double*));
+    for (i = 0; i < N; i++) {
+        a[i] = malloc(N * sizeof(double));
+        l[i] = malloc(N * sizeof(double));
+        u[i] = malloc(N * sizeof(double));
+        mult[i] = malloc(N * sizeof(double));
+    }
+	
+	srand(time(NULL));
+	fillMat(a, l, u, N);
+	
+	clock_t t; 
+	t = clock();
+		
+	decomLU(a, l, u, N); 
+		
+	t = clock() - t; 
+	double time_taken = ((double)t)/CLOCKS_PER_SEC;
+	
+	multMat(l, u, mult, N); 
+
+	printf("\n    Matriz A: \n");
+	showMat(a, N);
+	printf("    Matriz L: \n");
+	showMat(l, N);
+	printf("    Matriz U: \n");
+	showMat(u, N); 
+	printf("    Multiplicacao das matrizes: \n");
+	showMat(mult, N); 
+	
+	printf("    Tempo de calculo: %f\n", time_taken); 
+	
+	for (i = 0; i < N; i++) {
+	    free(a[i]);
+	    free(l[i]);
+	    free(u[i]);
+	    free(mult[i]);
+	}
+	
+	free(a);
+	free(l);
+	free(u);
+	free(mult);
+	
+	return 0;
+}
