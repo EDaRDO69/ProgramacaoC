@@ -36,7 +36,8 @@ void showMat(double **a, int N)
 	printf("\n");
 }
 
-void decomLU(double **a, double **l, double **u, int N) {
+void decomLU(double **a, double **l, double **u, int N) 
+{
     int i = 0, j = 0, k = 0, s = 0;
     double soma = 0;
 
