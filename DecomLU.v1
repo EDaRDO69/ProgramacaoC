@@ -47,36 +47,36 @@ void decomLU(double **a, double **l, double **u, int N)
         for (j = k; j < N; j++) 
 		{
             soma = 0;
-        	for (s = 0; s < k; s++) 
-		{
-			//Cálcula o sigma da fórmula
-                	soma += (l[k][s] * u[s][j]);
-           	}
+            for (s = 0; s < k; s++) 
+			{
+				//Cálcula o sigma da fórmula
+                soma += (l[k][s] * u[s][j]);
+            }
             //Realiza a fórmula do U
             u[k][j] = (a[k][j] - soma);
         }
 		
-	// Calcula os elementos de L na coluna k
+		// Calcula os elementos de L na coluna k
         for (i = k + 1; i < N; i++) 
-	{
-        	soma = 0;
-        	for (s = 0; s < k; s++) 
 		{
-		//Cálcula o sigma da fórmula
+            soma = 0;
+            for (s = 0; s < k; s++) 
+			{
+				//Cálcula o sigma da fórmula
                 soma += (l[i][s] * u[s][k]);
-            	}
+            }
 
-        	if (u[k][k] != 0) 
-		{
-			//Se for diferente de 0, vai realizar a fórmula do L
-                	l[i][k] = ((a[i][k] - soma) / u[k][k]);
-	        } else {
-	            	// Matriz singular ou pivô zero, então, para a execução
-	                printf("Matriz singular ou pivot zero!\n");
-	                return;
-	        }
+            if (u[k][k] != 0) 
+			{
+				//Se for diferente de 0, vai realizar a fórmula do L
+                l[i][k] = ((a[i][k] - soma) / u[k][k]);
+            } else {
+            	// Matriz singular ou pivô zero, então, para a execução
+                printf("Matriz singular ou pivot zero!\n");
+                return;
+        	}
         }
-	//Define a diagonal principal de L como 1
+		//Define a diagonal principal de L como 1
         l[k][k] = 1;
     }
 }
@@ -102,20 +102,26 @@ int main()
 {
 	int i = 0, N = 0;
 	
-	printf("Insira o tamanho de matriz que deseja (NxN): ");
-	scanf("%d", &N);
+	printf("======================================================================================================\n\n");
+	printf("\tTrabalho Programação C - Decomposicao LU\n");
+	printf("\tEduardo Rossoni Paim - Gabriel Galdino Gottlieb\n");
+	printf("\t23.05.2025\n\n");
+	printf("======================================================================================================\n\n");
+	
+	printf(" Insira o tamanho de matriz que deseja (NxN): ");
+    scanf("%d", &N);
     
-	//Usa o malloc para alocar memória dinamicamente e poder utilizar matrizes grandes.
+    //Usa o malloc para alocar memória dinamicamente e poder utilizar matrizes grandes.
 	double **a = malloc(N * sizeof(double*));
-    	double **l = malloc(N * sizeof(double*));
-    	double **u = malloc(N * sizeof(double*));
-    	double **mult = malloc(N * sizeof(double*));
-    	for (i = 0; i < N; i++) {
-        	a[i] = malloc(N * sizeof(double));
-        	l[i] = malloc(N * sizeof(double));
-        	u[i] = malloc(N * sizeof(double));
-        	mult[i] = malloc(N * sizeof(double));
-    	}
+    double **l = malloc(N * sizeof(double*));
+    double **u = malloc(N * sizeof(double*));
+    double **mult = malloc(N * sizeof(double*));
+    for (i = 0; i < N; i++) {
+        a[i] = malloc(N * sizeof(double));
+        l[i] = malloc(N * sizeof(double));
+        u[i] = malloc(N * sizeof(double));
+        mult[i] = malloc(N * sizeof(double));
+    }
 	
 	srand(time(NULL));
 	fillMat(a, l, u, N);
